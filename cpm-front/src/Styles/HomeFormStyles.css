@@ -1,0 +1,16 @@
+.home-container{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+
+}
+.home-children{
+    margin: 1% 1%;
+    height: 100%;
+    width: 50%;
+
+}
