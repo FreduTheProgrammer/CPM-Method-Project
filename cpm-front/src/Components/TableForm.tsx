@@ -1,46 +1,47 @@
 import React, {FC} from 'react';
-import { Table, Paper, TextInput, Button, CloseButton } from '@mantine/core';
+import {Table, Paper, TextInput, Button, CloseButton} from '@mantine/core';
 import {TableDto} from '../dto/TableDto'
-import { useForm } from '@mantine/form';
+import {useForm} from '@mantine/form';
 import "../Styles/ActivityFormStyle.css";
-interface TableFormProps {}
 
-export const TableForm: FC<TableFormProps> = ({}) =>{
+interface TableFormProps {
+}
+
+export const TableForm: FC<TableFormProps> = ({}) => {
 
     const [activities, setActivities] = React.useState<TableDto[]>([]);
+    const [ids, setIds] = React.useState(0);
 
-    const validateNumberInput = (value: any)=>{
-        if(isNaN(value)){
-            return 'Input must be a number';
-        }
-    }
-    const validateTextInput =(value:any)=>{
-        const regex=/^A-Z$/;
-
-        if(!regex.test(value)){
-            return 'Input must be a single uppercase letter';
-        }
-    }
 
     const rowForm = useForm<TableDto>({
-        initialValues:{
+        initialValues: {
+            Id: 0,
             Czynnosc: "",
-            Czas: 0,
-            ZdarzeniePoprzedzajace:""
+            Czas: undefined,
+            ZdarzeniePoprzedzajace: ""
         },
+        validate: {
+            Czynnosc: (value) => /^[a-z]/.test(value),
+            ZdarzeniePoprzedzajace: (value) => /^[a-z]/.test(value),
+        }
     })
 
-    const handleOnSubmit=(row: TableDto)=>{
-        const data: TableDto={
+    const handleOnSubmit = (row: TableDto) => {
+        const data: TableDto = {
+            Id: ids,
             Czynnosc: row.Czynnosc,
             Czas: row.Czas,
             ZdarzeniePoprzedzajace: row.ZdarzeniePoprzedzajace
         }
         activities.push(data);
-
     }
 
-    const generateNetDiagram=()=>{
+    const removeActivity = (id: number) => {
+        const dataAfterRemoveRow = activities.filter((row) => id !== row.Id);
+        setActivities(dataAfterRemoveRow);
+    }
+
+    const generateNetDiagram = () => {
         console.log(activities);
     }
 
@@ -55,28 +56,44 @@ export const TableForm: FC<TableFormProps> = ({}) =>{
 
     return (
         <div>
-            <Table style={{marginBottom:"2%"}} striped highlightOnHover withBorder withColumnBorders>
+            <Table style={{marginBottom: "2%"}} striped highlightOnHover withBorder withColumnBorders>
                 <thead>{ths}</thead>
-                <tbody>{activities.map((row)=>(
+                <tbody>{activities.map((row) => (
                     <tr>
                         <td>{row.Czynnosc}</td>
                         <td>{row.Czas}</td>
                         <td>{row.ZdarzeniePoprzedzajace}</td>
-                        <td><CloseButton/></td>
+                        <td><CloseButton onClick={() => removeActivity(row.Id)}/></td>
                     </tr>
                 ))}</tbody>
             </Table>
-            <form onSubmit={rowForm.onSubmit((values)=>handleOnSubmit(values))}>
+            <form onSubmit={rowForm.onSubmit((values) => handleOnSubmit(values))}>
                 <Paper className={"container-parent-rows"} shadow="xs" radius="md" p="sm" withBorder>
-                    <TextInput placeholder={"Wprowadź czynność"} required type={"text"} {...rowForm.getInputProps("Czynnosc")} />
-                    <TextInput placeholder={"Wprowadź czas"} required type={"number"} {...rowForm.getInputProps("Czas")}/>
-                    <TextInput placeholder={"Wprowadź czynność poprzedzającą"} required type={"text"} {...rowForm.getInputProps("ZdarzeniePoprzedzajace")}/>
-                    <Button type={'submit'} color="dark" uppercase>
-                        Dodaj czynność
-                    </Button>
-                    <Button onClick={()=>generateNetDiagram()} uppercase>
-                        Generuj
-                    </Button>
+                    <div className={"container-children"}>
+                        <TextInput label={"Czynność"} placeholder={"Wprowadź czynność"} required type={"text"}
+                                   maxLength={1} {...rowForm.getInputProps("Czynnosc")}
+                        />
+                        <TextInput label={"Czas"} placeholder={"Wprowadź czas"} required
+                                   type={"number"} {...rowForm.getInputProps("Czas")}/>
+                        <TextInput label={"Czynność poprzedzająca"} placeholder={"Wprowadź czynność poprzedzającą"} maxLength={1} required
+                                   type={"text"} {...rowForm.getInputProps("ZdarzeniePoprzedzajace")}/>
+                    </div>
+                    <div className={"container-children"}>
+                        <Button onClick={() => {
+                            setIds(ids + 1);
+                        }} type={'submit'} color="dark" uppercase>
+                            Dodaj czynność
+                        </Button>
+                        <Button onClick={() => generateNetDiagram()} uppercase>
+                            Generuj
+                        </Button>
+                        <Button color="red" onClick={() => {
+                            setActivities([]);
+                            setIds(0);
+                        }}>
+                            Wyczyść listę
+                        </Button>
+                    </div>
                 </Paper>
             </form>
         </div>
