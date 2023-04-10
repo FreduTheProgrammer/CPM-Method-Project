@@ -16,22 +16,22 @@ export const TableForm: FC<TableFormProps> = ({}) => {
     const rowForm = useForm<TableDto>({
         initialValues: {
             Id: 0,
-            Czynnosc: "",
-            Czas: undefined,
-            ZdarzeniePoprzedzajace: ""
+            Activity: "",
+            Duration: undefined,
+            Predecessors: ""
         },
         validate: {
-            Czynnosc: (value) => /^[a-z]/.test(value),
-            ZdarzeniePoprzedzajace: (value) => /^[a-z]/.test(value),
+            Activity: (value) => /^[a-z]/.test(value),
+            Predecessors: (value) => /^[a-z]/.test(value),
         }
     })
 
     const handleOnSubmit = (row: TableDto) => {
         const data: TableDto = {
             Id: ids,
-            Czynnosc: row.Czynnosc,
-            Czas: row.Czas,
-            ZdarzeniePoprzedzajace: row.ZdarzeniePoprzedzajace
+            Activity: row.Activity,
+            Duration: row.Duration,
+            Predecessors: row.Predecessors
         }
         activities.push(data);
     }
@@ -59,10 +59,10 @@ export const TableForm: FC<TableFormProps> = ({}) => {
             <Table style={{marginBottom: "2%"}} striped highlightOnHover withBorder withColumnBorders>
                 <thead>{ths}</thead>
                 <tbody>{activities.map((row) => (
-                    <tr>
-                        <td>{row.Czynnosc}</td>
-                        <td>{row.Czas}</td>
-                        <td>{row.ZdarzeniePoprzedzajace}</td>
+                    <tr key={row.Id}>
+                        <td>{row.Activity}</td>
+                        <td>{row.Duration}</td>
+                        <td>{row.Predecessors}</td>
                         <td><CloseButton onClick={() => removeActivity(row.Id)}/></td>
                     </tr>
                 ))}</tbody>
@@ -71,12 +71,12 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                 <Paper className={"container-parent-rows"} shadow="xs" radius="md" p="sm" withBorder>
                     <div className={"container-children"}>
                         <TextInput label={"Czynność"} placeholder={"Wprowadź czynność"} required type={"text"}
-                                   maxLength={1} {...rowForm.getInputProps("Czynnosc")}
+                                   maxLength={1} {...rowForm.getInputProps("Activity")}
                         />
                         <TextInput label={"Czas"} placeholder={"Wprowadź czas"} required
-                                   type={"number"} {...rowForm.getInputProps("Czas")}/>
+                                   type={"number"} {...rowForm.getInputProps("Duration")}/>
                         <TextInput label={"Czynność poprzedzająca"} placeholder={"Wprowadź czynność poprzedzającą"} maxLength={1} required
-                                   type={"text"} {...rowForm.getInputProps("ZdarzeniePoprzedzajace")}/>
+                                   type={"text"} {...rowForm.getInputProps("Predecessors")}/>
                     </div>
                     <div className={"container-children"}>
                         <Button onClick={() => {
