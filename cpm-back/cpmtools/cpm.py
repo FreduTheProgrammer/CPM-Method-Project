@@ -65,19 +65,19 @@ class Cpm (nx.DiGraph):
     def _add_tasks(self, critical_path):
         if self.has_node("Finish"):
             self.remove_node("Finish")
+            
+        if critical_path[-1] == "Finish":
+            critical_path.remove("Finish")
+
         final_task_time = self._node[critical_path[-1]]["ES"] + self._node[critical_path[-1]]["Duration"]
         self.add_node("Finish", Duration=0, ES=final_task_time, EF=final_task_time, LS=final_task_time, LF=final_task_time, Reserve=0, Critical=True)
         self.add_edge(critical_path[-1], "Finish")
         critical_path.append("Finish")
 
     def _connect_hanging_nodes(self):
-        has_hanging_nodes = False
         for node in self._node:
             if not next(self.successors(node), None) and node != "Finish":
-                has_hanging_nodes = True
                 self.add_edge(node, "Finish")
-        if not has_hanging_nodes:
-            self.remove_node("Finish")
     @property
     def critical_path_length(self):
         if self._dirty:

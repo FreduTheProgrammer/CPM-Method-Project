@@ -11,7 +11,7 @@ def generate_graph(request):
     return graph
 
 def draw_graph(graph):
-    critical_path = graph.critical_path
+    critical_path = graph.compute_critical_path()
     pos = nx.nx_agraph.graphviz_layout(graph, prog='dot')
     _, ax = plt.subplots(figsize=(15, 15))
     nx.draw_networkx_nodes(graph, pos, node_size=2000, node_color='red', ax=ax, nodelist=critical_path)
