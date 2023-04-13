@@ -15,29 +15,29 @@ export const TableForm: FC<TableFormProps> = ({}) => {
 
     const rowForm = useForm<TableDto>({
         initialValues: {
-            Id: 0,
-            Activity: "",
-            Duration: undefined,
-            Predecessors: ""
+            id: 0,
+            activity: "",
+            duration: undefined,
+            predecessors: []
         },
         validate: {
-            Activity: (value) => /^[a-z]/.test(value),
-            Predecessors: (value) => /^[a-z]/.test(value),
+            activity: (value) => /^[a-z]/.test(value),
+            predecessors: (value) => /^[a-z]/.test(value.toString()),
         }
     })
 
     const handleOnSubmit = (row: TableDto) => {
         const data: TableDto = {
-            Id: ids,
-            Activity: row.Activity,
-            Duration: row.Duration,
-            Predecessors: row.Predecessors
+            id: ids,
+            activity: row.activity,
+            duration: row.duration,
+            predecessors: row.predecessors
         }
         activities.push(data);
     }
 
     const removeActivity = (id: number) => {
-        const dataAfterRemoveRow = activities.filter((row) => id !== row.Id);
+        const dataAfterRemoveRow = activities.filter((row) => id !== row.id);
         setActivities(dataAfterRemoveRow);
     }
 
@@ -59,11 +59,11 @@ export const TableForm: FC<TableFormProps> = ({}) => {
             <Table style={{marginBottom: "2%"}} striped highlightOnHover withBorder withColumnBorders>
                 <thead>{ths}</thead>
                 <tbody>{activities.map((row) => (
-                    <tr key={row.Id}>
-                        <td>{row.Activity}</td>
-                        <td>{row.Duration}</td>
-                        <td>{row.Predecessors}</td>
-                        <td><CloseButton onClick={() => removeActivity(row.Id)}/></td>
+                    <tr key={row.id}>
+                        <td>{row.activity}</td>
+                        <td>{row.duration}</td>
+                        <td>{row.predecessors}</td>
+                        <td><CloseButton onClick={() => removeActivity(row.id)}/></td>
                     </tr>
                 ))}</tbody>
             </Table>
@@ -71,12 +71,12 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                 <Paper className={"container-parent-rows"} shadow="xs" radius="md" p="sm" withBorder>
                     <div className={"container-children"}>
                         <TextInput label={"Czynność"} placeholder={"Wprowadź czynność"} required type={"text"}
-                                   maxLength={1} {...rowForm.getInputProps("Activity")}
+                                   maxLength={1} {...rowForm.getInputProps("activity")}
                         />
                         <TextInput label={"Czas"} placeholder={"Wprowadź czas"} required
-                                   type={"number"} {...rowForm.getInputProps("Duration")}/>
+                                   type={"number"} {...rowForm.getInputProps("duration")}/>
                         <TextInput label={"Czynność poprzedzająca"} placeholder={"Wprowadź czynność poprzedzającą"} maxLength={1} required
-                                   type={"text"} {...rowForm.getInputProps("Predecessors")}/>
+                                   type={"text"} {...rowForm.getInputProps("predecessors")}/>
                     </div>
                     <div className={"container-children"}>
                         <Button onClick={() => {
