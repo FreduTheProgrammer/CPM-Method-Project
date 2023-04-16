@@ -1,4 +1,9 @@
 
+export enum GanttChartType {
+    AsSoonAsPossible,
+    AsLateAsPossible,
+}
+
 export interface GanttDto {
     Critical: boolean;
     Duration: number;
@@ -7,5 +12,6 @@ export interface GanttDto {
     LF: number,
     LS: number,
     Name: string,
-    Reserve: number
+    Reserve: number,
+    Predecessors: string[] | []
 }

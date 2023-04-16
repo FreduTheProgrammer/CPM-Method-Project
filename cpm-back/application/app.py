@@ -18,7 +18,7 @@ def get_cpm_chart():
         img_hash = graph_generator.draw_graph(graph)
         return jsonify({
             "response": url_for('static', filename=f"{img_hash}.png"),
-            "activities": [{"Name": name, **val} for name, val in graph._node.items()]
+            "activities": [{"Name": name, "Predecessors": [p_name for p_name in graph.predecessors(name)], **val} for name, val in graph._node.items()]
             }), 200
     except Exception as e:
         logger.error(str(e))

@@ -5,7 +5,7 @@ import { GanttChart } from './GanttChart';
 import {useForm} from '@mantine/form';
 import "../Styles/ActivityFormStyle.css";
 import {postData} from "./api";
-import { GanttDto } from '../dto/GanttDto';
+import { GanttChartType, GanttDto } from '../dto/GanttDto';
 
 interface TableFormProps {
 }
@@ -56,9 +56,8 @@ export const TableForm: FC<TableFormProps> = ({}) => {
             setGanttActivities(data.activities.map((activity: any) => {
                 return activity as GanttDto;
             }))
-            console.log(ganttActivities)
+            setIsClicked(true);
         })
-        console.log(diagram);
     }
 
     const ths = (
@@ -101,8 +100,7 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                             Dodaj czynność
                         </Button>
                         <Button onClick={() =>{
-                            generateNetDiagram()
-                            setIsClicked(true);
+                            generateNetDiagram();
                         }
                         } uppercase>
                             Generuj
@@ -116,7 +114,12 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                     </div>
                 </Paper>
             </form>
-            {isClicked && <img src={`${diagram}`} />}
+            {isClicked && <>
+                            <img src={`${diagram}`} />
+                            <GanttChart data={ganttActivities} type={GanttChartType.AsSoonAsPossible}/>
+                            <GanttChart data={ganttActivities} type={GanttChartType.AsLateAsPossible}/>
+                          </>
+            }
         </div>
     );
 };
