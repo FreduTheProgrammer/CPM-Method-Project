@@ -1,22 +1,23 @@
-import React, {FC, useEffect} from 'react';
-import {Table, Paper, TextInput, Button, CloseButton} from '@mantine/core';
+import React, {FC} from 'react';
+import {Button, CloseButton, Paper, Table, TextInput} from '@mantine/core';
 import {TableDto} from '../dto/TableDto'
-import { GanttChart } from './GanttChart';
+import {GanttChart} from './GanttChart';
 import {useForm} from '@mantine/form';
 import "../Styles/ActivityFormStyle.css";
 import {postData} from "./api";
-import { GanttChartType, GanttDto } from '../dto/GanttDto';
+import {GanttChartType, GanttDto} from '../dto/GanttDto';
 
 interface TableFormProps {
+    setImageHashv2: (result: string) => void;
+    setIsClicked: (isClicked: boolean) => void;
+    setGanttActivities: (activities: GanttDto[]) => void;
 }
 
-export const TableForm: FC<TableFormProps> = ({}) => {
+export const TableForm: FC<TableFormProps> = ({setIsClicked, setImageHashv2, setGanttActivities}) => {
 
     const [activities, setActivities] = React.useState<TableDto[]>([]);
     const [ids, setIds] = React.useState(0);
-    const [diagram,setDiagram] = React.useState();
-    const [isClicked, setIsClicked] = React.useState(false);
-    const [ganttActivities, setGanttActivities] = React.useState<GanttDto[]>([]);
+    const [diagram, setDiagram] = React.useState();
 
     const rowForm = useForm<TableDto>({
         initialValues: {
@@ -32,8 +33,8 @@ export const TableForm: FC<TableFormProps> = ({}) => {
     })
 
     const handleOnSubmit = (row: TableDto) => {
-        let listOfLetters = row.predecessors.toString().split(",").map((letter)=>letter.trim());
-        if(listOfLetters[0]==='') listOfLetters=[];
+        let listOfLetters = row.predecessors.toString().split(",").map((letter) => letter.trim());
+        if (listOfLetters[0] === '') listOfLetters = [];
         const data: TableDto = {
             id: ids,
             activity: row.activity,
@@ -50,9 +51,10 @@ export const TableForm: FC<TableFormProps> = ({}) => {
     }
 
     const generateNetDiagram = async () => {
-        await postData(activities).then((data)=>{
+        await postData(activities).then((data) => {
             console.log(data)
-            setDiagram(data.response)
+            // setDiagram(data.response)
+            setImageHashv2(data.response);
             setGanttActivities(data.activities.map((activity: any) => {
                 return activity as GanttDto;
             }))
@@ -99,7 +101,7 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                         }} type={'submit'} color="dark" uppercase>
                             Dodaj czynność
                         </Button>
-                        <Button onClick={() =>{
+                        <Button onClick={() => {
                             generateNetDiagram();
                         }
                         } uppercase>
@@ -114,12 +116,12 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                     </div>
                 </Paper>
             </form>
-            {isClicked && <>
-                            <img src={`${diagram}`} />
-                            <GanttChart data={ganttActivities} type={GanttChartType.AsSoonAsPossible}/>
-                            <GanttChart data={ganttActivities} type={GanttChartType.AsLateAsPossible}/>
-                          </>
-            }
+            {/*{isClicked && <>*/}
+            {/*                /!*<img src={`${diagram}`} />*!/*/}
+            {/*                <GanttChart data={ganttActivities} type={GanttChartType.AsSoonAsPossible}/>*/}
+            {/*                <GanttChart data={ganttActivities} type={GanttChartType.AsLateAsPossible}/>*/}
+            {/*              </>*/}
+            {/*}*/}
         </div>
     );
 };
