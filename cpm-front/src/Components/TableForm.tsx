@@ -1,23 +1,42 @@
-import React, {FC} from 'react';
+import React, {FC, useEffect} from 'react';
 import {Table, Paper, TextInput, Button, CloseButton} from '@mantine/core';
 import {TableDto} from '../dto/TableDto'
 import {useForm} from '@mantine/form';
 import "../Styles/ActivityFormStyle.css";
+import {postData, getImage} from "./api";
+import {API_URL} from "../config";
+import {log} from "util";
 
 interface TableFormProps {
 }
+
+
+export function convertPNGToDataURL(pngFile: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const dataURL = reader.result as string;
+            resolve(dataURL);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(pngFile);
+    });
+}
+
 
 export const TableForm: FC<TableFormProps> = ({}) => {
 
     const [activities, setActivities] = React.useState<TableDto[]>([]);
     const [ids, setIds] = React.useState(0);
-
+    const [diagram,setDiagram] = React.useState('3cdfbe14-be49-4888-8173-f80a5f1359a3');
+    const [isClicked, setIsClicked] = React.useState(false);
+    const [imageUrl,setImageUrl] = React.useState('')
 
     const rowForm = useForm<TableDto>({
         initialValues: {
             id: 0,
             activity: "",
-            duration: undefined,
+            duration: 0,
             predecessors: []
         },
         validate: {
@@ -26,13 +45,26 @@ export const TableForm: FC<TableFormProps> = ({}) => {
         }
     })
 
+
+
+    function convertHashToPNG(hash: string): Blob {
+
+        const hashWithoutDashes = hash.replace(/-/g, '');
+        const arrayBuffer = new Uint8Array(hashWithoutDashes.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16))).buffer;
+        const pngFile = new Blob([arrayBuffer], { type: 'image/png' });
+        return pngFile;
+    }
+
     const handleOnSubmit = (row: TableDto) => {
+        let listOfLetters = row.predecessors.toString().split(",").map((letter)=>letter.trim());
+        if(listOfLetters[0]==='') listOfLetters=[];
         const data: TableDto = {
             id: ids,
             activity: row.activity,
             duration: row.duration,
-            predecessors: row.predecessors
+            predecessors: listOfLetters
         }
+        console.log(data);
         activities.push(data);
     }
 
@@ -41,8 +73,11 @@ export const TableForm: FC<TableFormProps> = ({}) => {
         setActivities(dataAfterRemoveRow);
     }
 
-    const generateNetDiagram = () => {
-        console.log(activities);
+    const generateNetDiagram = async () => {
+        postData(activities).then((data)=>{
+            setDiagram(data.response)
+        })
+        console.log(diagram);
     }
 
     const ths = (
@@ -75,7 +110,7 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                         />
                         <TextInput label={"Czas"} placeholder={"Wprowadź czas"} required
                                    type={"number"} {...rowForm.getInputProps("duration")}/>
-                        <TextInput label={"Czynność poprzedzająca"} placeholder={"Wprowadź czynność poprzedzającą"} maxLength={1} required
+                        <TextInput label={"Czynność poprzedzająca"} placeholder={"Wprowadź czynność poprzedzającą"}
                                    type={"text"} {...rowForm.getInputProps("predecessors")}/>
                     </div>
                     <div className={"container-children"}>
@@ -84,7 +119,11 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                         }} type={'submit'} color="dark" uppercase>
                             Dodaj czynność
                         </Button>
-                        <Button onClick={() => generateNetDiagram()} uppercase>
+                        <Button onClick={() =>{
+                            generateNetDiagram()
+                            setIsClicked(true);
+                        }
+                        } uppercase>
                             Generuj
                         </Button>
                         <Button color="red" onClick={() => {
@@ -96,6 +135,7 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                     </div>
                 </Paper>
             </form>
+            {isClicked && <img src={process.env.PUBLIC_URL + `/img/${diagram}.png`} alt={"no nie"}/>}
         </div>
     );
 };
