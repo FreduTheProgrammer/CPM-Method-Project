@@ -28,7 +28,7 @@ export const TableForm: FC<TableFormProps> = ({}) => {
 
     const [activities, setActivities] = React.useState<TableDto[]>([]);
     const [ids, setIds] = React.useState(0);
-    const [diagram,setDiagram] = React.useState('3cdfbe14-be49-4888-8173-f80a5f1359a3');
+    const [diagram,setDiagram] = React.useState();
     const [isClicked, setIsClicked] = React.useState(false);
     const [imageUrl,setImageUrl] = React.useState('')
 
@@ -135,7 +135,7 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                     </div>
                 </Paper>
             </form>
-            {isClicked && <img src={process.env.PUBLIC_URL + `/img/${diagram}.png`} alt={"no nie"}/>}
+            {isClicked && <img src={`${diagram}`} alt={"no nie"}/>}
         </div>
     );
 };

@@ -8,7 +8,7 @@ export const postData = (data: TableDto[]) => {
         duration: typeof item.duration === "number" ? item.duration : Number(item.duration)
     }));
 
-    return ky.post(`http://127.0.0.1:5000/api/cpm`, {
+    return ky.post(`/api/cpm`, {
         headers: {
             'Content-Type': 'application/json'
         },
