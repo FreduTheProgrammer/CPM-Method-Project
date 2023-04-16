@@ -17,13 +17,14 @@ export const GanttChart: FC<GanttChartProps> = ({data, type}) => {
             start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDay() 
             + type === GanttChartType.AsSoonAsPossible ? activity.ES : activity.LS),
             end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDay() 
-            + type == GanttChartType.AsLateAsPossible ? activity.EF : activity.LF),
+            + type == GanttChartType.AsSoonAsPossible ? activity.EF : activity.LF),
             id: activity.Name,
             name: activity.Name,
             type: "task",
             progress: 100,
-            dependencies: activity.Predecessors
+            dependencies: activity.Predecessors,
+            styles: {progressColor: activity.Critical ? 'red' : 'blue'}
         }
     })
-    return <Gantt tasks={tasks} viewMode={ViewMode.Day}/>
+    return <Gantt tasks={tasks} viewMode={ViewMode.Day} />
 }
