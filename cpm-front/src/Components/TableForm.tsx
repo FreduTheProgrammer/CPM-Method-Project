@@ -1,28 +1,14 @@
 import React, {FC, useEffect} from 'react';
 import {Table, Paper, TextInput, Button, CloseButton} from '@mantine/core';
 import {TableDto} from '../dto/TableDto'
+import { GanttChart } from './GanttChart';
 import {useForm} from '@mantine/form';
 import "../Styles/ActivityFormStyle.css";
-import {postData, getImage} from "./api";
-import {API_URL} from "../config";
-import {log} from "util";
+import {postData} from "./api";
+import { GanttDto } from '../dto/GanttDto';
 
 interface TableFormProps {
 }
-
-
-export function convertPNGToDataURL(pngFile: Blob): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => {
-            const dataURL = reader.result as string;
-            resolve(dataURL);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(pngFile);
-    });
-}
-
 
 export const TableForm: FC<TableFormProps> = ({}) => {
 
@@ -30,7 +16,7 @@ export const TableForm: FC<TableFormProps> = ({}) => {
     const [ids, setIds] = React.useState(0);
     const [diagram,setDiagram] = React.useState();
     const [isClicked, setIsClicked] = React.useState(false);
-    const [imageUrl,setImageUrl] = React.useState('')
+    const [ganttActivities, setGanttActivities] = React.useState<GanttDto[]>([]);
 
     const rowForm = useForm<TableDto>({
         initialValues: {
@@ -44,16 +30,6 @@ export const TableForm: FC<TableFormProps> = ({}) => {
             predecessors: (value) => /^[a-z]/.test(value.toString()),
         }
     })
-
-
-
-    function convertHashToPNG(hash: string): Blob {
-
-        const hashWithoutDashes = hash.replace(/-/g, '');
-        const arrayBuffer = new Uint8Array(hashWithoutDashes.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16))).buffer;
-        const pngFile = new Blob([arrayBuffer], { type: 'image/png' });
-        return pngFile;
-    }
 
     const handleOnSubmit = (row: TableDto) => {
         let listOfLetters = row.predecessors.toString().split(",").map((letter)=>letter.trim());
@@ -74,8 +50,13 @@ export const TableForm: FC<TableFormProps> = ({}) => {
     }
 
     const generateNetDiagram = async () => {
-        postData(activities).then((data)=>{
+        await postData(activities).then((data)=>{
+            console.log(data)
             setDiagram(data.response)
+            setGanttActivities(data.activities.map((activity: any) => {
+                return activity as GanttDto;
+            }))
+            console.log(ganttActivities)
         })
         console.log(diagram);
     }
@@ -106,7 +87,7 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                 <Paper className={"container-parent-rows"} shadow="xs" radius="md" p="sm" withBorder>
                     <div className={"container-children"}>
                         <TextInput label={"Czynność"} placeholder={"Wprowadź czynność"} required type={"text"}
-                                   maxLength={1} {...rowForm.getInputProps("activity")}
+                                   maxLength={15} {...rowForm.getInputProps("activity")}
                         />
                         <TextInput label={"Czas"} placeholder={"Wprowadź czas"} required
                                    type={"number"} {...rowForm.getInputProps("duration")}/>
@@ -135,7 +116,7 @@ export const TableForm: FC<TableFormProps> = ({}) => {
                     </div>
                 </Paper>
             </form>
-            {isClicked && <img src={`${diagram}`} alt={"no nie"}/>}
+            {isClicked && <img src={`${diagram}`} />}
         </div>
     );
 };

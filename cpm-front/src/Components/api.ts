@@ -20,28 +20,3 @@ export const postData = (data: TableDto[]) => {
             console.error(error);
         })
 };
-
-export const getImage = async (imgHash: string): Promise<Blob> =>{
-    const response = await fetch(`${API_URL}/image/${imgHash}.png`);
-    return await response.blob();
-}
-
-// export const postData = async (data: TableDto[]) => {
-//     await fetch(`${API_URL}/cpm`, {
-//         method: 'POST',
-//         headers: {
-//             ContentType: 'application/json'
-//         },
-//         body: JSON.stringify(data)
-//     }).then(response =>{
-//         if(response.ok){
-//             return response.text();
-//         }else{
-//             throw new Error(`Request failed, status code ${response.status}`)
-//         }
-//     }).catch(error =>{
-//         console.log(error);
-//     })
-//     // const imageBlob = await response.blob();
-//     // return URL.createObjectURL(imageBlob);
-// }
