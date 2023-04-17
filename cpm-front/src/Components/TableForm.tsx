@@ -5,7 +5,7 @@ import {GanttChart} from './GanttChart';
 import {useForm} from '@mantine/form';
 import "../Styles/ActivityFormStyle.css";
 import {postData} from "./api";
-import {GanttChartType, GanttDto} from '../dto/GanttDto';
+import {GanttDto} from '../dto/GanttDto';
 import {goodDataNotification, wrongDataNotification} from "./notification";
 
 interface TableFormProps {
@@ -121,12 +121,6 @@ export const TableForm: FC<TableFormProps> = ({setIsClicked, setImageHashv2, set
                     </div>
                 </Paper>
             </form>
-            {/*{isClicked && <>*/}
-            {/*                /!*<img src={`${diagram}`} />*!/*/}
-            {/*                <GanttChart data={ganttActivities} type={GanttChartType.AsSoonAsPossible}/>*/}
-            {/*                <GanttChart data={ganttActivities} type={GanttChartType.AsLateAsPossible}/>*/}
-            {/*              </>*/}
-            {/*}*/}
         </div>
     );
 };

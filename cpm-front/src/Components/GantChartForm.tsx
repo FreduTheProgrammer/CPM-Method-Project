@@ -1,5 +1,5 @@
 import React, {FC} from 'react';
-import {GanttChartType, GanttDto} from "../dto/GanttDto";
+import {GanttDto} from "../dto/GanttDto";
 import {GanttChart} from "./GanttChart";
 
 interface GantChartFormProps {
@@ -12,8 +12,8 @@ export const GantChartForm: FC<GantChartFormProps> = ({ganttActivities, isClicke
         <div>
             {isClicked &&
                 <>
-                    <GanttChart data={ganttActivities} type={GanttChartType.AsSoonAsPossible}/>
-                    <GanttChart data={ganttActivities} type={GanttChartType.AsLateAsPossible}/>
+                    <GanttChart data={ganttActivities} type={1}/>
+                    <GanttChart data={ganttActivities} type={2}/>
                 </>
             }
         </div>
