@@ -6,6 +6,7 @@ import {useForm} from '@mantine/form';
 import "../Styles/ActivityFormStyle.css";
 import {postData} from "./api";
 import {GanttChartType, GanttDto} from '../dto/GanttDto';
+import {goodDataNotification, wrongDataNotification} from "./notification";
 
 interface TableFormProps {
     setImageHashv2: (result: string) => void;
@@ -47,19 +48,23 @@ export const TableForm: FC<TableFormProps> = ({setIsClicked, setImageHashv2, set
 
     const removeActivity = (id: number) => {
         const dataAfterRemoveRow = activities.filter((row) => id !== row.id);
+        wrongDataNotification();
         setActivities(dataAfterRemoveRow);
     }
 
     const generateNetDiagram = async () => {
-        await postData(activities).then((data) => {
-            console.log(data)
-            // setDiagram(data.response)
-            setImageHashv2(data.response);
-            setGanttActivities(data.activities.map((activity: any) => {
-                return activity as GanttDto;
-            }))
-            setIsClicked(true);
-        })
+        try{
+            await postData(activities).then((data) => {
+                setImageHashv2(data.response);
+                setGanttActivities(data.activities.map((activity: any) => {
+                    return activity as GanttDto;
+                }))
+                setIsClicked(true);
+            })
+            goodDataNotification();
+        }catch (error){
+            wrongDataNotification();
+        }
     }
 
     const ths = (
