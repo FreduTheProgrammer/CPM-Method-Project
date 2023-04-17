@@ -48,7 +48,6 @@ export const TableForm: FC<TableFormProps> = ({setIsClicked, setImageHashv2, set
 
     const removeActivity = (id: number) => {
         const dataAfterRemoveRow = activities.filter((row) => id !== row.id);
-        wrongDataNotification();
         setActivities(dataAfterRemoveRow);
     }
 
