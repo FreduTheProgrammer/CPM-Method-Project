@@ -1,7 +1,7 @@
 
 export interface TableDto {
-    Id: number;
-    Activity: string;
-    Duration: number | undefined;
-    Predecessors: string;
+    id: number;
+    activity: string;
+    duration: number;
+    predecessors: string[] | [];
 }

@@ -12,6 +12,7 @@ def generate_graph(request):
 
 def draw_graph(graph):
     critical_path = graph.compute_critical_path()
+    plt.switch_backend('Agg')
     pos = nx.nx_agraph.graphviz_layout(graph, prog='dot')
     _, ax = plt.subplots(figsize=(15, 15))
     nx.draw_networkx_nodes(graph, pos, node_size=2000, node_color='red', ax=ax, nodelist=critical_path)
@@ -30,5 +31,5 @@ def draw_graph(graph):
                     arrowprops=dict(arrowstyle="wedge"))
     ax.axis('off')
     img_name = uuid.uuid4()
-    plt.savefig(f"../img/{img_name}.png")
+    plt.savefig(f"static/{img_name}.png")
     return img_name

@@ -63,12 +63,6 @@ class Cpm (nx.DiGraph):
         self._criticalPath = self.subgraph(graph)
 
     def _add_tasks(self, critical_path):
-        if self.has_node("Finish"):
-            self.remove_node("Finish")
-            
-        if critical_path[-1] == "Finish":
-            critical_path.remove("Finish")
-
         final_task_time = self._node[critical_path[-1]]["ES"] + self._node[critical_path[-1]]["Duration"]
         self.add_node("Finish", Duration=0, ES=final_task_time, EF=final_task_time, LS=final_task_time, LF=final_task_time, Reserve=0, Critical=True)
         self.add_edge(critical_path[-1], "Finish")

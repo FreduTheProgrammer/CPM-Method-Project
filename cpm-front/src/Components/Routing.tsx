@@ -11,7 +11,6 @@ const publicRoutes =[
     }
 ]
 
-
 export const Routing: FC<RoutingProps> = ({}) =>{
     return useRoutes(publicRoutes)
 };
