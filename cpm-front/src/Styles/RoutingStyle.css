@@ -1,0 +1,11 @@
+.application-container {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    height: 100%
+}
+.application-children {
+    height: 50%;
+    width: 30%;
+}
