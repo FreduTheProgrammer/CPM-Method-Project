@@ -120,12 +120,6 @@ export const TableForm: FC<TableFormProps> = ({setIsClicked, setImageHashv2, set
                     </div>
                 </Paper>
             </form>
-            {/*{isClicked && <>*/}
-            {/*                /!*<img src={`${diagram}`} />*!/*/}
-            {/*                <GanttChart data={ganttActivities} type={GanttChartType.AsSoonAsPossible}/>*/}
-            {/*                <GanttChart data={ganttActivities} type={GanttChartType.AsLateAsPossible}/>*/}
-            {/*              </>*/}
-            {/*}*/}
         </div>
     );
 };
