@@ -1,16 +1,30 @@
 import React, {FC} from 'react';
 import {Home} from "./Home";
 import {useRoutes} from "react-router-dom";
+import {MiddleMan} from "./MiddleMan";
+import {WhichApplication} from "./WhichApplication";
 
-interface RoutingProps {}
+interface RoutingProps {
+}
 
-const publicRoutes =[
+
+const routes =[
     {
-        path:'/',
-        element:<Home/>
+        path:"/",
+        element: <WhichApplication/>,
+        children:[
+            {
+                path:'/cpm',
+                element:<Home/>
+            },
+            {
+                path:'/middle',
+                element:<MiddleMan/>
+            }
+        ]
     }
 ]
 
 export const Routing: FC<RoutingProps> = ({}) =>{
-    return useRoutes(publicRoutes)
+    return useRoutes(routes);
 };

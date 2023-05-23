@@ -25,3 +25,23 @@ def get_cpm_chart():
     except Exception as e:
         logger.error(str(e))
         return jsonify({"error": str(e)}), 400
+
+
+
+Total_cost = 0
+Income=0
+Profit=0
+@app.route("/api/middleman", methods=["POST"])
+def get_middleman_data():
+#     print(request.json)
+    try:
+        return jsonify({
+            "response": {
+                "Total_cost": Total_cost,
+                "Income": Income,
+                "Profit": Profit
+            }
+        })
+    except Exception as e:
+        logger.error(str(e))
+        return jsonify({"error": str(e)}),400

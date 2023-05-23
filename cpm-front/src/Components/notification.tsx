@@ -15,3 +15,11 @@ export const wrongDataNotification = () =>{
         message:"Wrong Data from request :(. Please enter correct data"
     })
 }
+
+export const wrongDataForSupplierAndCustomers =()=>{
+    showNotification({
+        color:"red",
+        title:"Error",
+        message:"Sprawdź czy uzupełniłeś wszystkie pola dla Odbiorców oraz dostawców"
+    })
+}

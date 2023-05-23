@@ -10,8 +10,13 @@ interface TableProps {
 
 export const NetworkTable: FC<TableProps> = ({setImageHash,setIsClicked, setGanttActivities}) =>{
     return (
-        <div>
-            <TableForm setImageHashv2={setImageHash} setIsClicked={setIsClicked} setGanttActivities={setGanttActivities}/>
+        <div className={"middle-man-container"}>
+            <div>
+
+            </div>
+            <div>
+                <TableForm setImageHashv2={setImageHash} setIsClicked={setIsClicked} setGanttActivities={setGanttActivities}/>
+            </div>
         </div>
     );
 };
