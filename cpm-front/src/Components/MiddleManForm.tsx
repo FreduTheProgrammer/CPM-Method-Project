@@ -5,6 +5,7 @@ import {preDataDto} from "../dto/preDataDto";
 import {SupplyAndDemandDto} from "../dto/supplyAndDemandDto";
 import {PostDataDto} from "../dto/PostDataDto";
 import {wrongDataForSupplierAndCustomers} from "./notification";
+import {Customer, PostDataDtov2, Supplier} from "../dto/PostDataDtoV2";
 
 interface MiddleManFormProps {
 }
@@ -20,8 +21,7 @@ export const MiddleManForm: FC<MiddleManFormProps> = ({}) => {
     const [purchasePrizes,setPurchasePrizes] = React.useState<number[]>([]);
     const [sellingPrizes, setSellingPrizes] = React.useState<number[]>([]);
     const [opacityMiddleMan, setOpacityMiddleMan] = React.useState(0);
-    let [postData, setPostData] = React.useState<PostDataDto>();
-
+    let [postDataV2, setPostDataV2] = React.useState<PostDataDtov2>();
 
     const preDataForm = useForm<preDataDto>({
         initialValues: {
@@ -61,21 +61,36 @@ export const MiddleManForm: FC<MiddleManFormProps> = ({}) => {
             customerInput.map((value => {
                 allCust+= value;
             }))
-            if(allSuply === allCust){
+            if(allSuply !== allCust){
                 setOpacityMiddleMan(1);
             }
         }
     }
 
-    const postAllDataToBackend = () =>{
-         postData={
-             Customers: customerInput,
-             Suppliers: supplierInput,
-             CostPerPathArray: costPerPath,
-             SellingPrizes: sellingPrizes,
-             PurchasePrizes: purchasePrizes
+    const postAllDataToBackend = () => {
+        postDataV2={
+            customers:[],
+            suppliers:[]
         }
-        console.log(postData);
+        for(let i =0; i< suppliers.length; i++){
+            let newSupplier: Supplier ={
+                supply: supplierInput[i],
+                purchasePrice: purchasePrizes[i],
+                transportCosts:[]
+            }
+            for(let j=0; j< costPerPath[i].length; j++) {
+                newSupplier.transportCosts?.push(costPerPath[i][j]);
+            }
+            postDataV2?.suppliers.push(newSupplier);
+        }
+        for(let i=0; i<customers.length; i++){
+            let newCustomer: Customer={
+                demand: customerInput[i],
+                sellingPrice: sellingPrizes[i]
+            }
+            postDataV2?.customers.push(newCustomer);
+        }
+        console.log(postDataV2);
          // obsluga endpointa
     }
 
@@ -138,9 +153,9 @@ export const MiddleManForm: FC<MiddleManFormProps> = ({}) => {
                     {supplierInput.map((vaule, index)=>(
                         <TextInput onChange={(event) => {
                             const input = parseInt(event.currentTarget.value);
-                            const updatedInput = [...sellingPrizes];
+                            const updatedInput = [...purchasePrizes];
                             updatedInput[index] = input;
-                            setSellingPrizes(updatedInput);
+                            setPurchasePrizes(updatedInput);
                         }} placeholder={`Dostawca ${index+1}`}/>
                     ))}
                 </Flex>
@@ -152,9 +167,9 @@ export const MiddleManForm: FC<MiddleManFormProps> = ({}) => {
                     {customerInput.map((vaule, index)=>(
                         <TextInput onChange={(event) => {
                             const input = parseInt(event.currentTarget.value);
-                            const updatedInput = [...purchasePrizes];
+                            const updatedInput = [...sellingPrizes];
                             updatedInput[index] = input;
-                            setPurchasePrizes(updatedInput);
+                            setSellingPrizes(updatedInput);
                         }} placeholder={`Odbiorca ${index+1}`}/>
                     ))}
                 </Flex>
