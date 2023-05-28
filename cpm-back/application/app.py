@@ -1,7 +1,9 @@
 from application import logger
 from cpmtools import graph_generator
+from middlemantools import middleman
 from flask import Flask, jsonify, request, url_for
 from flask_cors import CORS
+import json
 from flask import send_from_directory
 
 def create_app():
@@ -28,20 +30,21 @@ def get_cpm_chart():
 
 
 
-Total_cost = 0
-Income=0
-Profit=0
+
 @app.route("/api/middleman", methods=["POST"])
 def get_middleman_data():
-#     print(request.json)
+    response_object = middleman.middlemansolver(request.json["suppliers"], request.json["customers"])
+    print(response_object)
     try:
         return jsonify({
             "response": {
-                "Total_cost": Total_cost,
-                "Income": Income,
-                "Profit": Profit
+                "Total_cost": response_object[2],
+                "Income": response_object[3],
+                "Profit": response_object[4],
+                "Individualprofits": response_object[0],
+                "Optimaltransport": response_object[1]
             }
         })
     except Exception as e:
         logger.error(str(e))
-        return jsonify({"error": str(e)}),400
+        return jsonify({"error": str(e)}), 400
